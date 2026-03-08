@@ -1,0 +1,8 @@
+# Python dependencies for Masa custom Odoo addons
+# Add any pip packages your custom modules need here
+
+# Example common dependencies:
+# vobject==0.9.6.1        # for calendar addons
+# xlrd==1.2.0             # for Excel import
+# num2words==0.5.12       # for amount-to-words in invoices
+# python-stdnum==1.17     # for VAT/tax number validation
