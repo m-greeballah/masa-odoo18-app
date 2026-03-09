@@ -20,7 +20,7 @@ on:
 
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/odoo18
-  GITOPS_REPO: masa-technology/masa-odoo18-chart
+  GITOPS_REPO: ${{ secrets.GITOPS_REPO }}  # ✅ correct
 
 jobs:
 
