@@ -1,1 +1,1 @@
-# Masa Odoo 18
+# Masa Odoo 18 demo
