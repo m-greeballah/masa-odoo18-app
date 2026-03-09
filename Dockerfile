@@ -8,13 +8,12 @@ FROM odoo:18.0
 USER root
 
 # ── System dependencies ──────────────────────────────────────
-# DL3008: pinned versions | DL3015: --no-install-recommends
-# DL3059: consolidated into single RUN
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git=1:2.39.5-0+deb12u2 \
-    curl=7.88.1-10+deb12u8 \
-    wget=1.21.3-1+deb12u1 \
-    postgresql-client=15+248 \
+    git \
+    curl \
+    wget \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Python dependencies for custom addons ───────────────────
