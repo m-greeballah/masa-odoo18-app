@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # ── Python dependencies for custom addons ───────────────────
 COPY requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+# Only run pip install if requirements.txt has real (non-comment) content
+RUN grep -qvE '^\s*(#|$)' /tmp/requirements.txt \
+    && pip3 install --no-cache-dir -r /tmp/requirements.txt \
+    || echo "No Python dependencies to install — skipping."
 
 # ── OCA Addons + Custom Addons in a single RUN ──────────────
 # DL3059: consolidated all git clones into one RUN block
