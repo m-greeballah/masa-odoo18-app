@@ -8,40 +8,37 @@ FROM odoo:18.0
 USER root
 
 # ── System dependencies ──────────────────────────────────────
-RUN apt-get update && apt-get install -y \
-    git \
-    curl \
-    wget \
-    postgresql-client \
+# DL3008: pinned versions | DL3015: --no-install-recommends
+# DL3059: consolidated into single RUN
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git=1:2.39.5-0+deb12u2 \
+    curl=7.88.1-10+deb12u8 \
+    wget=1.21.3-1+deb12u1 \
+    postgresql-client=15+248 \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Python dependencies for custom addons ───────────────────
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
-# ── OCA Addons (pinned to 18.0 branch) ──────────────────────
+# ── OCA Addons + Custom Addons in a single RUN ──────────────
+# DL3059: consolidated all git clones into one RUN block
 RUN git clone --depth=1 -b 18.0 \
-    https://github.com/OCA/partner-contact.git \
-    /mnt/oca-addons/partner-contact
+        https://github.com/OCA/partner-contact.git \
+        /mnt/oca-addons/partner-contact \
+    && git clone --depth=1 -b 18.0 \
+        https://github.com/OCA/web.git \
+        /mnt/oca-addons/web \
+    && git clone --depth=1 -b 18.0 \
+        https://github.com/OCA/account-financial-tools.git \
+        /mnt/oca-addons/account-financial-tools \
+    && chown -R odoo:odoo /mnt/oca-addons
 
-RUN git clone --depth=1 -b 18.0 \
-    https://github.com/OCA/web.git \
-    /mnt/oca-addons/web
-
-RUN git clone --depth=1 -b 18.0 \
-    https://github.com/OCA/account-financial-tools.git \
-    /mnt/oca-addons/account-financial-tools
-
-# ── Custom Addons (copied from repo) ────────────────────────
-# All environments share the same image — addons_path in
-# odoo.conf (managed by Helm) controls which are active per env
+# ── Custom Addons ────────────────────────────────────────────
 COPY custom-addons/ /mnt/custom-addons/
-
-# ── Fix permissions ──────────────────────────────────────────
-RUN chown -R odoo:odoo /mnt/oca-addons /mnt/custom-addons
+RUN chown -R odoo:odoo /mnt/custom-addons
 
 # ── Switch back to odoo user ─────────────────────────────────
 USER odoo
 
-# Expose Odoo ports
 EXPOSE 8069 8072
