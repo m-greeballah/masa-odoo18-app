@@ -1,4 +1,4 @@
-# Python dependencies for Masa custom Odoo addons
+## Python dependencies for Masa custom Odoo addons
 # Add any pip packages your custom modules need here
 
 # Example common dependencies:
